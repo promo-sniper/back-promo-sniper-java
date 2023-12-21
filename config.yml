@@ -1,4 +1,6 @@
 ---
+template: Hello, %s!
+defaultName: Promo-Sniper
 logging:
   level: INFO
   loggers:
