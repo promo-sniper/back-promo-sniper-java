@@ -1,5 +1,6 @@
 package com.anorneto.promosniper;
 
+import com.anorneto.promosniper.presenters.controller.UserController;
 import io.dropwizard.core.Application;
 import io.dropwizard.core.setup.Bootstrap;
 import io.dropwizard.core.setup.Environment;
@@ -23,7 +24,7 @@ public class PromoSniperApplication extends Application<PromoSniperConfiguration
     @Override
     public void run(final PromoSniperConfiguration configuration,
                     final Environment environment) {
-        // TODO: implement application
+        environment.jersey().register(UserController.class);
     }
 
 }

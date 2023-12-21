@@ -1,8 +1,9 @@
 package com.anorneto.promosniper.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,25 +11,20 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class User {
-    @NotBlank
+@AllArgsConstructor
+@Builder
+public class UserTopic {
+
+    @NotNull
     @JsonProperty
-    private String name;
+    private int topicId;
 
-    @Email
-    @JsonProperty
-    private String email;
-
-
-    @NotBlank
-    @JsonProperty
-    private String passwordHash;
-
+    @NotNull
     @JsonProperty
     private LocalDateTime createdDate;
 
+    @NotNull
     private Boolean isEnabled;
 
-    @JsonProperty
     private LocalDateTime disabledDate;
 }
