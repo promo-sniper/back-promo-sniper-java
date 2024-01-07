@@ -5,3 +5,8 @@ logging:
   level: INFO
   loggers:
     com.anorneto: DEBUG
+swagger:
+  resourcePackage: com.anorneto.promosniper.presenters.controller
+  version: 1.0.0
+  title: Promo Sniper
+  description: Promo Sniper First API

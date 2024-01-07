@@ -1,10 +1,12 @@
 package com.anorneto.promosniper.domain.dto;
 
+import com.anorneto.promosniper.common.util.NumberParser;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Getter
@@ -18,14 +20,20 @@ public class TelegramPromoDTO {
     private final String photoUrl;
 
     @NotBlank
-    private final LocalDateTime dateTime;
+    private final ZonedDateTime dateTime;
 
+    private int telegramId;
 
-    public TelegramPromoDTO(String numVisualizations, String text, String photoUrl, String dateTime) {
-        this.numVisualizations = Integer.parseInt(numVisualizations);
+    public TelegramPromoDTO(String numVisualizations, String text, String photoUrl, String dateTime, int telegramId) {
         this.text = text;
-        Pattern urlRegexPattern = Pattern.compile(".*background-image:url\\('(.*)'\\)");
-        this.photoUrl = urlRegexPattern.matcher(photoUrl).group(1);
-        this.dateTime = LocalDateTime.parse(dateTime);
+        this.telegramId = telegramId;
+
+        this.numVisualizations = NumberParser.parseNumber(numVisualizations);
+
+        Pattern photoUrlRegexPattern = Pattern.compile("background-image:url\\('([^']+)'\\)");
+        Matcher photoUrlRegexMatcher = photoUrlRegexPattern.matcher(photoUrl);
+        this.photoUrl = photoUrlRegexMatcher.find() ? photoUrlRegexMatcher.group(1) : photoUrl;
+
+        this.dateTime = ZonedDateTime.parse(dateTime);
     }
 }

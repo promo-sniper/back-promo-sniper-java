@@ -16,7 +16,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <dropwizard.version>4.0.4</dropwizard.version>
+        <dropwizard.version>4.0.5</dropwizard.version>
         <mainClass>com.anorneto.promosniper.PromoSniperApplication</mainClass>
     </properties>
 
@@ -55,8 +55,12 @@
             <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <!-- jsoup HTML parser library @ https://jsoup.org/ -->
+        <dependency> <!-- dropwizard swagger plugin @ https://github.com/smoketurner/dropwizard-swagger -->
+            <groupId>com.smoketurner</groupId>
+            <artifactId>dropwizard-swagger</artifactId>
+            <version>4.0.5-1</version>
+        </dependency>
+        <dependency> <!-- jsoup HTML parser library @ https://jsoup.org/ -->
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>1.17.1</version>
