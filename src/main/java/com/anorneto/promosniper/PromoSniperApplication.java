@@ -34,6 +34,7 @@ public class PromoSniperApplication extends Application<PromoSniperConfiguration
     ) {
         environment.jersey().register(UserController.class);
         environment.jersey().register(TelegramController.class);
+        
         AppHealthCheck appHealthCheck = new AppHealthCheck(configuration.getTemplate());
         environment.healthChecks().register("appHealthCheck", appHealthCheck);
     }

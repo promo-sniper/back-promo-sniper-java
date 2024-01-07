@@ -1,5 +1,6 @@
 package com.anorneto.promosniper.infrastructure.repositories;
 
+import com.anorneto.promosniper.domain.dto.TelegramPromoDTO;
 import jakarta.ws.rs.core.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -8,7 +9,6 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
 
 import static java.lang.String.format;
 
@@ -20,9 +20,13 @@ public class TelegramRepository {
     }
 
     public Response getAll() throws IOException {
-        ArrayList<Map<String, String>> telegramPromoList = new ArrayList<>();
+        ArrayList<TelegramPromoDTO> telegramPromoList = new ArrayList<>();
         Document doc = Jsoup.connect("https://t.me/s/rapaduraofertas").get();
         log(doc.title());
+
+        //Pattern pattern = Pattern.compile("w3schools", Pattern.CASE_INSENSITIVE);
+        // Matcher matcher = pattern.matcher("Visit W3Schools!");
+
         Elements telegramHtmlElementList = doc.select("div[data-post] > div.tgme_widget_message_bubble");
         for (Element telegramHtmlElement : telegramHtmlElementList) {
             String photoURL = telegramHtmlElement.select("div.tgme_widget_message_bubble > a.tgme_widget_message_photo_wrap").attr("style");
@@ -34,7 +38,9 @@ public class TelegramRepository {
                     "%s\n%s\n%s\n%s\n", photoURL, text, numVisulizations, topicDateTime
             );
             telegramPromoList.add(
-                    Map.of("photoUrl", photoURL, "text", text, "numVisualizations", numVisulizations, "topicDateTime", topicDateTime)
+                    new TelegramPromoDTO(
+                            numVisulizations, text, photoURL, topicDateTime
+                    )
             );
         }
         return Response.ok().entity(telegramPromoList).build();
