@@ -19,21 +19,18 @@ jobs:
       uses: docker/setup-buildx-action@v1
 
     - name: Build and push Docker Image
-      uses: docker/build-push-action@v4
       env:
           IMAGE_TAG: back-promo-sniper-${{ steps.uuid.outputs.sha_short }}
-      with:
-        context: .
-        file: ./Dockerfile
-        push: true
-        tags: ttl.sh/${IMAGE_TAG}:1h
+      run:
+          docker build -t ttl.sh/${IMAGE_TAG}:1h .
+          docker push ttl.sh/${IMAGE_TAG}:1h
 
     - name: Deploy Image to CapRrover
       uses: caprover/deploy-from-github@v1.1.2
       env:
-          IMAGE_TAG: back-promo-sniper-${{ steps.uuid.outputs.sha_short }}
+          IMAGE_TAG: ttl.sh/back-promo-sniper-${{ steps.uuid.outputs.sha_short }}:1h
       with:
         server: "${{ secrets.CAPROVER_SERVER }}"
         app: "${{ vars.BACKEND_APP_NAME }}"
         token: "${{ secrets.BACKEND_APP_TOKEN }}"
-        image: ttl.sh/${IMAGE_TAG}:1h
+        image: $IMAGE_TAG
