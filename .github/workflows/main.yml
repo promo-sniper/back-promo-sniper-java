@@ -26,7 +26,7 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: ${{ ttl.sh/${IMAGE_TAG}:1h }}
+        tags: ttl.sh/${IMAGE_TAG}:1h
 
     - name: Deploy Image to CapRrover
       uses: caprover/deploy-from-github@v1.1.2
@@ -34,6 +34,6 @@ jobs:
           IMAGE_TAG: back-promo-sniper-${{ steps.uuid.outputs.sha_short }}
       with:
         server: "${{ secrets.CAPROVER_SERVER }}"
-        app: "${{ variables.BACKEND_APP_NAME }}"
+        app: "${{ vars.BACKEND_APP_NAME }}"
         token: "${{ secrets.BACKEND_APP_TOKEN }}"
-        image: ${{ ttl.sh/${IMAGE_TAG}:1h }}
+        image: ttl.sh/${IMAGE_TAG}:1h
