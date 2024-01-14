@@ -12,7 +12,8 @@ COPY config.yml /usr/src/app
 RUN mvn -f /usr/src/app/pom.xml clean package
 
 #FROM gcr.io/distroless/java17-debian12
-FROM eclipse-temurin:21-jre
+##FROM eclipse-temurin:21-jre
+FROM bellsoft/liberica-runtime-container:jre-21-glibc
 LABEL repository=promo-sniper
 LABEL tag=latest
 LABEL author="Anor Neto"
