@@ -22,7 +22,7 @@ jobs:
       env:
           IMAGE_TAG: back-promo-sniper-${{ steps.uuid.outputs.sha_short }}
       run:
-          docker build -t ttl.sh/${IMAGE_TAG}:1h .
+          docker buildx build -t ttl.sh/${IMAGE_TAG}:1h .
           docker push ttl.sh/${IMAGE_TAG}:1h
 
     - name: Deploy Image to CapRrover
