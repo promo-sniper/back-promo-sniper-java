@@ -10,8 +10,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.dropwizard.core.Application;
 import io.dropwizard.core.setup.Bootstrap;
 import io.dropwizard.core.setup.Environment;
-import io.federecio.dropwizard.swagger.SwaggerBundle;
-import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
+
+/**
+ * import io.federecio.dropwizard.swagger.SwaggerBundle;
+ * import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
+ */
 
 public class PromoSniperApplication extends Application<PromoSniperConfiguration> {
 
@@ -33,13 +36,14 @@ public class PromoSniperApplication extends Application<PromoSniperConfiguration
         jackssonObjectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false); // Config Date Format
         jackssonObjectMapper.registerModule(new JavaTimeModule());
 
-        // Swagger Initialization
-        bootstrap.addBundle(new SwaggerBundle<>() {
-            @Override
-            protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(PromoSniperConfiguration configuration) {
-                return configuration.swaggerBundleConfiguration;
-            }
+        /**
+         // Swagger Initialization
+         bootstrap.addBundle(new SwaggerBundle<>() {
+        @Override protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(PromoSniperConfiguration configuration) {
+        return configuration.swaggerBundleConfiguration;
+        }
         });
+         */
     }
 
     @Override
