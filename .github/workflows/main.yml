@@ -9,15 +9,7 @@ jobs:
     steps:
     - name: Check out repository
       uses: actions/checkout@v3
-
-    - name: Setup Node
-      uses: actions/setup-node@v3
       
-    - name: Install Caprover
-      run: |
-        npm install -g caprover
-        
-
     - name: Generate uuid from shortened commit SHA
       id: uuid
       run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
@@ -30,9 +22,11 @@ jobs:
           docker push ttl.sh/${IMAGE_TAG}:1h
 
     - name: Deploy Image to CapRrover
-      shell: bash
+      uses: caprover/deploy-from-github@v1.1.2
       env:
-          IMAGE_NAME: ttl.sh/back-promo-sniper-${{ steps.uuid.outputs.sha_short }}:1h
-      run: |
-          echo "Deploying image to CapRover..."
-          caprover deploy --host ${{secrets.CAPROVER_SERVER}} --appToken ${{secrets.BACKEND_APP_TOKEN}} --appName ${{vars.BACKEND_APP_NAME}} --imageName ${{ env.IMAGE_NAME }}
+          IMAGE_TAG: ttl.sh/back-promo-sniper-${{ steps.uuid.outputs.sha_short }}:1h
+      with:
+        server: "${{ secrets.CAPROVER_SERVER }}"
+        app: "${{ vars.BACKEND_APP_NAME }}"
+        token: "${{ secrets.BACKEND_APP_TOKEN }}"
+        image: "${{ env.IMAGE_TAG }}"
