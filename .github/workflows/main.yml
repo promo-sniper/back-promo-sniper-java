@@ -26,12 +26,9 @@ jobs:
           docker push ttl.sh/${IMAGE_TAG}:1h
 
     - name: Deploy Image to CapRrover
-      uses: hazeezet/caprover-action@v1
+      shell: bash
       env:
-          IMAGE_NAME: ttl.sh/back-promo-sniper-${{ steps.uuid.outputs.sha_short }}
-      with:
-        server: "${{ secrets.CAPROVER_SERVER }}"
-        app-name: "${{ vars.BACKEND_APP_NAME }}"
-        app-token: "${{ secrets.BACKEND_APP_TOKEN }}"
-        image-name: "${{ env.IMAGE_NAME }}"
-        image-tag: "1h"
+          IMAGE_NAME: ttl.sh/back-promo-sniper-${{ steps.uuid.outputs.sha_short }}:1h
+      run: |
+          echo "Deploying image to CapRover..."
+          docker run caprover/cli-caprover:latest caprover deploy --host ${{secrets.CAPROVER_SERVER}} --appToken ${{secrets.BACKEND_APP_TOKEN}} --appName ${{vars.BACKEND_APP_NAME}} --imageName ${{ env.IMAGE_NAME }}
