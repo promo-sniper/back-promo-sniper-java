@@ -33,4 +33,4 @@ jobs:
         server: "${{ secrets.CAPROVER_SERVER }}"
         app: "${{ vars.BACKEND_APP_NAME }}"
         token: "${{ secrets.BACKEND_APP_TOKEN }}"
-        image: $IMAGE_TAG
+        image: "${{ env.IMAGE_TAG }}"
