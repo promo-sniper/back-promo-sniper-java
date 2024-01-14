@@ -21,7 +21,7 @@ jobs:
     - name: Build and push Docker Image
       env:
           IMAGE_TAG: back-promo-sniper-${{ steps.uuid.outputs.sha_short }}
-      run:
+      run: |
           docker build -t ttl.sh/${IMAGE_TAG}:1h .
           docker push ttl.sh/${IMAGE_TAG}:1h
 
