@@ -15,14 +15,14 @@ jobs:
       run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+    #- name: Set up Docker Buildx
+    #  uses: docker/setup-buildx-action@v1
 
     - name: Build and push Docker Image
       env:
           IMAGE_TAG: back-promo-sniper-${{ steps.uuid.outputs.sha_short }}
       run:
-          docker buildx build -t ttl.sh/${IMAGE_TAG}:1h .
+          docker build -t ttl.sh/${IMAGE_TAG}:1h .
           docker push ttl.sh/${IMAGE_TAG}:1h
 
     - name: Deploy Image to CapRrover
