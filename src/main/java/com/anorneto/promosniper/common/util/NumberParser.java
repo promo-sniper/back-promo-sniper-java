@@ -5,10 +5,12 @@ public class NumberParser {
         double multiplier = 1.0;
 
         if (input.endsWith("K")) {
-            multiplier = 1e3; // 1 thousand
+            // 1 thousand
+            multiplier = 1e3;
             input = input.substring(0, input.length() - 1);
         } else if (input.endsWith("M")) {
-            multiplier = 1e6; // 1 million
+            // 1 million
+            multiplier = 1e6;
             input = input.substring(0, input.length() - 1);
         }
 

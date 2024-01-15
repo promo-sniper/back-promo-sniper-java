@@ -1,4 +1,4 @@
-package com.anorneto.promosniper.presenters.helpers;
+package com.anorneto.promosniper.presenters.healthcheck;
 
 import com.codahale.metrics.health.HealthCheck;
 

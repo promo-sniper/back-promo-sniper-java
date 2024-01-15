@@ -1,8 +1,9 @@
 package com.anorneto.promosniper;
 
+import com.anorneto.promosniper.presenters.common.StatusCodeFeature;
 import com.anorneto.promosniper.presenters.controller.TelegramController;
 import com.anorneto.promosniper.presenters.controller.UserController;
-import com.anorneto.promosniper.presenters.helpers.AppHealthCheck;
+import com.anorneto.promosniper.presenters.healthcheck.AppHealthCheck;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -10,6 +11,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.dropwizard.core.Application;
 import io.dropwizard.core.setup.Bootstrap;
 import io.dropwizard.core.setup.Environment;
+import io.federecio.dropwizard.swagger.SwaggerBundle;
+import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.FilterRegistration;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
@@ -36,25 +39,22 @@ public class PromoSniperApplication extends Application<PromoSniperConfiguration
         // Jackson Initialization
         ObjectMapper jackssonObjectMapper = bootstrap.getObjectMapper();
         jackssonObjectMapper.enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
-        jackssonObjectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false); // Config Date Format
+        // Config Date Format
+        jackssonObjectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         jackssonObjectMapper.registerModule(new JavaTimeModule());
 
-        /**
-         * // Swagger Initialization
-         * bootstrap.addBundle(new SwaggerBundle<>() {
-         * @Override protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(PromoSniperConfiguration configuration) {
-         * return configuration.swaggerBundleConfiguration;
-         * }
-         * });
-         */
+        // Swagger Initialization
+        bootstrap.addBundle(new SwaggerBundle<>() {
+            @Override
+            protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(PromoSniperConfiguration configuration) {
+                return configuration.swaggerBundleConfiguration;
+            }
+        });
     }
 
     @Override
     public void run(final PromoSniperConfiguration configuration, final Environment environment) {
-        // Cors Filter
-        // environment.getApplicationContext().addFilter(CrossOriginFilter.class, "/*",
-        // EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
+        // Servlets Cors Filter
         FilterRegistration.Dynamic corsFilter = environment.servlets().addFilter("CORS", CrossOriginFilter.class);
         corsFilter.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,PUT,PATCH,POST,DELETE,OPTIONS");
         corsFilter.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");
@@ -62,6 +62,9 @@ public class PromoSniperApplication extends Application<PromoSniperConfiguration
                 CrossOriginFilter.ALLOWED_HEADERS_PARAM,
                 "Content-Type,Authorization,X-Requested-With,Content-Length,Accept,Origin");
         corsFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
+
+        // Status Filter
+        environment.jersey().register(StatusCodeFeature.class);
 
         // Register new routes here
         environment.jersey().register(UserController.class);

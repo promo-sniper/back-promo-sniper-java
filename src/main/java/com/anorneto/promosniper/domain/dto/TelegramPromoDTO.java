@@ -22,7 +22,7 @@ public class TelegramPromoDTO {
     @NotBlank
     private final ZonedDateTime dateTime;
 
-    private int telegramId;
+    private final int telegramId;
 
     public TelegramPromoDTO(String numVisualizations, String text, String photoUrl, String dateTime, int telegramId) {
         this.text = text;
