@@ -2,8 +2,10 @@ package com.anorneto.promosniper;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.core.Configuration;
+import io.dropwizard.db.DataSourceFactory;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 // Gets properties from the YAML config file
 public class PromoSniperConfiguration extends Configuration {
@@ -11,29 +13,17 @@ public class PromoSniperConfiguration extends Configuration {
     @JsonProperty("swagger")
     public SwaggerBundleConfiguration swaggerBundleConfiguration;
 
-    @NotEmpty
-    private String template;
+    @Valid
+    @NotNull
+    private DataSourceFactory database = new DataSourceFactory();
 
-    @NotEmpty
-    private String defaultName = "Promo-Sniper";
-
-    @JsonProperty
-    public String getTemplate() {
-        return template;
+    @JsonProperty("database")
+    public DataSourceFactory getDataSourceFactory() {
+        return database;
     }
 
-    @JsonProperty
-    public void setTemplate(String template) {
-        this.template = template;
-    }
-
-    @JsonProperty
-    public String getDefaultName() {
-        return defaultName;
-    }
-
-    @JsonProperty
-    public void setDefaultName(String name) {
-        this.defaultName = name;
+    @JsonProperty("database")
+    public void setDataSourceFactory(DataSourceFactory factory) {
+        this.database = factory;
     }
 }

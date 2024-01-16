@@ -11,18 +11,17 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.dropwizard.core.Application;
 import io.dropwizard.core.setup.Bootstrap;
 import io.dropwizard.core.setup.Environment;
+import io.dropwizard.jdbi3.JdbiFactory;
+import io.dropwizard.jdbi3.bundles.JdbiExceptionsBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.FilterRegistration;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.jdbi.v3.core.Jdbi;
 
 import java.util.EnumSet;
 
-/**
- * import io.federecio.dropwizard.swagger.SwaggerBundle;
- * import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
- */
 public class PromoSniperApplication extends Application<PromoSniperConfiguration> {
 
     public static void main(final String[] args) throws Exception {
@@ -40,7 +39,7 @@ public class PromoSniperApplication extends Application<PromoSniperConfiguration
         ObjectMapper jackssonObjectMapper = bootstrap.getObjectMapper();
         jackssonObjectMapper.enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         // Config Date Format
-        jackssonObjectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        jackssonObjectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         jackssonObjectMapper.registerModule(new JavaTimeModule());
 
         // Swagger Initialization
@@ -50,10 +49,16 @@ public class PromoSniperApplication extends Application<PromoSniperConfiguration
                 return configuration.swaggerBundleConfiguration;
             }
         });
+        // Jdbi Exceptions Bundle
+        bootstrap.addBundle(new JdbiExceptionsBundle());
     }
 
     @Override
     public void run(final PromoSniperConfiguration configuration, final Environment environment) {
+        // Database Connection
+        final JdbiFactory factory = new JdbiFactory();
+        final Jdbi jdbi = factory.build(environment, configuration.getDataSourceFactory(), "postgresql");
+        // environment.jersey().register(new UserResource(jdbi));
         // Servlets Cors Filter
         FilterRegistration.Dynamic corsFilter = environment.servlets().addFilter("CORS", CrossOriginFilter.class);
         corsFilter.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,PUT,PATCH,POST,DELETE,OPTIONS");
@@ -69,8 +74,8 @@ public class PromoSniperApplication extends Application<PromoSniperConfiguration
         // Register new routes here
         environment.jersey().register(UserController.class);
         environment.jersey().register(TelegramController.class);
-
-        AppHealthCheck appHealthCheck = new AppHealthCheck(configuration.getTemplate());
+        //  HealthChecks
+        AppHealthCheck appHealthCheck = new AppHealthCheck();
         environment.healthChecks().register("appHealthCheck", appHealthCheck);
     }
 }
