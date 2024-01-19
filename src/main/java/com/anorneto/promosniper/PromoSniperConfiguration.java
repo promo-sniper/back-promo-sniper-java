@@ -15,15 +15,10 @@ public class PromoSniperConfiguration extends Configuration {
 
     @Valid
     @NotNull
+    @JsonProperty("database")
     private DataSourceFactory database = new DataSourceFactory();
 
-    @JsonProperty("database")
     public DataSourceFactory getDataSourceFactory() {
         return database;
-    }
-
-    @JsonProperty("database")
-    public void setDataSourceFactory(DataSourceFactory factory) {
-        this.database = factory;
     }
 }

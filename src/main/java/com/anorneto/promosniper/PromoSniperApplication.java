@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.dropwizard.configuration.EnvironmentVariableSubstitutor;
+import io.dropwizard.configuration.SubstitutingSourceProvider;
 import io.dropwizard.core.Application;
 import io.dropwizard.core.setup.Bootstrap;
 import io.dropwizard.core.setup.Environment;
@@ -35,6 +37,10 @@ public class PromoSniperApplication extends Application<PromoSniperConfiguration
 
     @Override
     public void initialize(final Bootstrap<PromoSniperConfiguration> bootstrap) {
+        // Enable variable substitution with environment variables
+        bootstrap.setConfigurationSourceProvider(new SubstitutingSourceProvider(
+                bootstrap.getConfigurationSourceProvider(), new EnvironmentVariableSubstitutor()));
+
         // Jackson Initialization
         ObjectMapper jackssonObjectMapper = bootstrap.getObjectMapper();
         jackssonObjectMapper.enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -58,6 +64,7 @@ public class PromoSniperApplication extends Application<PromoSniperConfiguration
         // Database Connection
         final JdbiFactory factory = new JdbiFactory();
         final Jdbi jdbi = factory.build(environment, configuration.getDataSourceFactory(), "postgresql");
+
         // environment.jersey().register(new UserResource(jdbi));
         // Servlets Cors Filter
         FilterRegistration.Dynamic corsFilter = environment.servlets().addFilter("CORS", CrossOriginFilter.class);
@@ -73,7 +80,7 @@ public class PromoSniperApplication extends Application<PromoSniperConfiguration
 
         // Register new routes here
         environment.jersey().register(UserController.class);
-        environment.jersey().register(TelegramController.class);
+        environment.jersey().register(new TelegramController(jdbi));
         //  HealthChecks
         AppHealthCheck appHealthCheck = new AppHealthCheck();
         environment.healthChecks().register("appHealthCheck", appHealthCheck);

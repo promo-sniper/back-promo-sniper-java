@@ -7,6 +7,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -24,7 +25,10 @@ public class TelegramRepository {
     public List<TelegramPromoDTO> getAll(String channelName) throws IOException {
         ArrayList<TelegramPromoDTO> telegramPromoList = new ArrayList<>();
         String channelUrl = format("https://t.me/s/%s", channelName);
-        Document doc = Jsoup.connect(channelUrl).get();
+        // TODO -> improve timeout config here, treat its exception
+        Document doc = Jsoup.connect(channelUrl)
+                .timeout((int) Duration.ofSeconds(30).toMillis())
+                .get();
 
         String sourceHeadLink = doc.head().select("link[rel=canonical]").attr("href");
         Matcher sourceNameMatcher = Pattern.compile("/s/([a-zA-Z]+)\\?before=").matcher(sourceHeadLink);

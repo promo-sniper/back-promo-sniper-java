@@ -1,6 +1,8 @@
 package com.anorneto.promosniper.presenters.controller;
 
+import com.anorneto.promosniper.domain.dto.PromoDTO;
 import com.anorneto.promosniper.domain.dto.TelegramPromoDTO;
+import com.anorneto.promosniper.infrastructure.repositories.PromoRepository;
 import com.anorneto.promosniper.infrastructure.repositories.TelegramRepository;
 import com.anorneto.promosniper.presenters.common.CommonApiResponse;
 import com.anorneto.promosniper.presenters.common.StatusCode;
@@ -11,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import org.jdbi.v3.core.Jdbi;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,10 +30,12 @@ public class TelegramController {
     private static final List<String> telegramChannels =
             new ArrayList<>(Arrays.asList("BenchPromo", "rapaduraofertas"));
     final TelegramRepository telegramRepository;
+    final Jdbi jdbi;
 
     // TODO: Do dependency injection here later
-    public TelegramController() {
+    public TelegramController(Jdbi jdbi) {
         this.telegramRepository = new TelegramRepository();
+        this.jdbi = jdbi;
     }
 
     @GET
@@ -74,6 +79,13 @@ public class TelegramController {
             @NotBlank @QueryParam("channelName") final String channelName) throws IOException {
         CommonApiResponse<List<TelegramPromoDTO>> response = new CommonApiResponse<>();
         List<TelegramPromoDTO> telegramPromoList = telegramRepository.getAll(channelName);
+
+        PromoRepository promoRepository = new PromoRepository(this.jdbi);
+
+        telegramPromoList.forEach(telegramPromo -> {
+            PromoDTO promoDTO = telegramPromo.toPromoDTO();
+            promoRepository.insert(promoDTO);
+        });
         return response.ok(telegramPromoList);
     }
 }

@@ -79,5 +79,8 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/maven,java,gradle,ssh
 
 ### Env Files
+env-files/
 
-./env-files/*
+### Intellij
+
+.idea

@@ -36,4 +36,19 @@ public class TelegramPromoDTO {
 
         this.dateTime = ZonedDateTime.parse(dateTime);
     }
+
+    public PromoDTO toPromoDTO() {
+
+        return PromoDTO.builder()
+                .sourceType("Telegram")
+                .sourceName("channelName")
+                .sourceIdentifier(telegramId)
+                .description(this.text)
+                .productUrl(null)
+                .productName("Unknown") // Update this as per your requirement
+                .productPrice(0.0) // Update this as per your requirement
+                .productPhoto(this.photoUrl)
+                .createdDate(this.dateTime)
+                .build();
+    }
 }

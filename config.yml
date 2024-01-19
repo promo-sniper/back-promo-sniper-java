@@ -10,13 +10,13 @@ swagger:
   description: Promo Sniper First API
 database:
   # the name of your JDBC driver
-  driverClass: org.postgresql.Driver
+  driverClass: ${DB_DRIVER}
   # the username
-  user: postgres
+  user: ${DB_USER}
   # the password
-  password: Plop-Dandy-Siding5-Concept
+  password: ${DB_PASSWORD}
   # the JDBC URL
-  url: jdbc:postgresql://db.gpsiancgxhqeggzudcnf.supabase.co:5432/postgres
+  url: ${DB_URL}
   # any properties specific to your JDBC driver:
   properties:
     charSet: UTF-8
@@ -26,10 +26,12 @@ database:
   validationQuery: "/* MyService Health Check */ SELECT 1"
   # the timeout before a connection validation queries fail
   validationQueryTimeout: 3s
+  # initial size of connection pool
+  initialSize: 2
   # the minimum number of connections to keep open
-  minSize: 4
+  minSize: 2 # 8
   # the maximum number of connections to keep open
-  maxSize: 32
+  maxSize: 16 #32
   # whether or not idle connections should be validated
   checkConnectionWhileIdle: false
   # the amount of time to sleep between runs of the idle connection validation, abandoned cleaner and idle pool resizing
