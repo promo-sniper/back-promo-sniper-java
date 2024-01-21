@@ -7,7 +7,7 @@ import jakarta.ws.rs.ext.Provider;
 
 @Provider
 public class StatusCodeFeature implements DynamicFeature {
-    @Override
+    @Override // TODO -> do logic here to get status code from response
     public void configure(ResourceInfo resourceInfo, FeatureContext context) {
         if (resourceInfo.getResourceMethod().getAnnotation(StatusCode.class) != null) {
             context.register(StatusCodeFilter.class);

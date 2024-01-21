@@ -1,5 +1,6 @@
 package com.anorneto.promosniper;
 
+import com.anorneto.promosniper.domain.usecase.jobs.ScrapTelegramJob;
 import com.anorneto.promosniper.presenters.common.StatusCodeFeature;
 import com.anorneto.promosniper.presenters.controller.TelegramController;
 import com.anorneto.promosniper.presenters.controller.UserController;
@@ -15,6 +16,7 @@ import io.dropwizard.core.setup.Bootstrap;
 import io.dropwizard.core.setup.Environment;
 import io.dropwizard.jdbi3.JdbiFactory;
 import io.dropwizard.jdbi3.bundles.JdbiExceptionsBundle;
+import io.dropwizard.jobs.JobsBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import jakarta.servlet.DispatcherType;
@@ -23,6 +25,7 @@ import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.jdbi.v3.core.Jdbi;
 
 import java.util.EnumSet;
+import java.util.List;
 
 public class PromoSniperApplication extends Application<PromoSniperConfiguration> {
 
@@ -65,6 +68,7 @@ public class PromoSniperApplication extends Application<PromoSniperConfiguration
         final JdbiFactory factory = new JdbiFactory();
         final Jdbi jdbi = factory.build(environment, configuration.getDataSourceFactory(), "postgresql");
 
+        // TODO -> Create Bundle for This
         // environment.jersey().register(new UserResource(jdbi));
         // Servlets Cors Filter
         FilterRegistration.Dynamic corsFilter = environment.servlets().addFilter("CORS", CrossOriginFilter.class);
@@ -84,5 +88,14 @@ public class PromoSniperApplication extends Application<PromoSniperConfiguration
         //  HealthChecks
         AppHealthCheck appHealthCheck = new AppHealthCheck();
         environment.healthChecks().register("appHealthCheck", appHealthCheck);
+
+        // Quartz Jobs
+        ScrapTelegramJob scrapTelegramJob = new ScrapTelegramJob(jdbi);
+        JobsBundle jobsBundle = new JobsBundle(List.of(scrapTelegramJob));
+        try {
+            jobsBundle.run(configuration, environment);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

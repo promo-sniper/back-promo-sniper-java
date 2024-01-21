@@ -26,6 +26,8 @@ public class TelegramRepository {
         ArrayList<TelegramPromoDTO> telegramPromoList = new ArrayList<>();
         String channelUrl = format("https://t.me/s/%s", channelName);
         // TODO -> improve timeout config here, treat its exception
+        // TODO -> improve performace of scrapping? get multiple docs at once? and covert latter?
+        // Return Array instead of list because we know size.
         Document doc = Jsoup.connect(channelUrl)
                 .timeout((int) Duration.ofSeconds(30).toMillis())
                 .get();

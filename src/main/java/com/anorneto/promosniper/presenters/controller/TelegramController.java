@@ -78,14 +78,15 @@ public class TelegramController {
     public CommonApiResponse<List<TelegramPromoDTO>> getTelegramPromos(
             @NotBlank @QueryParam("channelName") final String channelName) throws IOException {
         CommonApiResponse<List<TelegramPromoDTO>> response = new CommonApiResponse<>();
+
         List<TelegramPromoDTO> telegramPromoList = telegramRepository.getAll(channelName);
 
         PromoRepository promoRepository = new PromoRepository(this.jdbi);
 
-        telegramPromoList.forEach(telegramPromo -> {
-            PromoDTO promoDTO = telegramPromo.toPromoDTO();
-            promoRepository.insert(promoDTO);
-        });
+        List<PromoDTO> promoDTOList =
+                telegramPromoList.stream().map(TelegramPromoDTO::toPromoDTO).toList();
+
+        promoRepository.batchInsert(promoDTOList);
         return response.ok(telegramPromoList);
     }
 }
