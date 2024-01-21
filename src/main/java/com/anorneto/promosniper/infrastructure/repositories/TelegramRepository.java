@@ -58,7 +58,8 @@ public class TelegramRepository {
                     .getFirst()
                     .attr("datetime");
 
-            telegramPromoList.add(new TelegramPromoDTO(numVisulizations, text, photoURL, topicDateTime, sourceId));
+            telegramPromoList.add(
+                    new TelegramPromoDTO(numVisulizations, text, photoURL, topicDateTime, sourceId, channelName));
         }
         return telegramPromoList;
     }

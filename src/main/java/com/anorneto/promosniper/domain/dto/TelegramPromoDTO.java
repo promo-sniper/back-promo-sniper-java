@@ -24,9 +24,19 @@ public class TelegramPromoDTO {
 
     private final int telegramId;
 
-    public TelegramPromoDTO(String numVisualizations, String text, String photoUrl, String dateTime, int telegramId) {
+    @NotBlank
+    private final String channelName;
+
+    public TelegramPromoDTO(
+            String numVisualizations,
+            String text,
+            String photoUrl,
+            String dateTime,
+            int telegramId,
+            String channelName) {
         this.text = text;
         this.telegramId = telegramId;
+        this.channelName = channelName;
 
         this.numVisualizations = NumberParser.parseNumber(numVisualizations);
 
@@ -41,7 +51,7 @@ public class TelegramPromoDTO {
 
         return PromoDTO.builder()
                 .sourceType("Telegram")
-                .sourceName("channelName")
+                .sourceName(channelName)
                 .sourceIdentifier(telegramId)
                 .description(this.text)
                 .productUrl(null)

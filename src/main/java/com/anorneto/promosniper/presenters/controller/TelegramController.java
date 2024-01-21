@@ -28,7 +28,7 @@ import java.util.List;
 @Tag(name = "Telegram", description = "Telegram Scrapping Routes")
 public class TelegramController {
     private static final List<String> telegramChannels =
-            new ArrayList<>(Arrays.asList("BenchPromo", "rapaduraofertas"));
+            new ArrayList<>(Arrays.asList("BenchPromos", "rapaduraofertas"));
     final TelegramRepository telegramRepository;
     final Jdbi jdbi;
 

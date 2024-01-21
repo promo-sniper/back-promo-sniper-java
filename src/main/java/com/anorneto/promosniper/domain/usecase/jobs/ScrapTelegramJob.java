@@ -43,7 +43,7 @@ public class ScrapTelegramJob extends Job {
         List<TelegramPromoDTO> telegramPromoListRapadura = null, telegramPromoListBenchPromo = null;
         try {
             telegramPromoListRapadura = telegramRepository.getAll("rapaduraofertas");
-            telegramPromoListBenchPromo = telegramRepository.getAll("BenchPromo");
+            telegramPromoListBenchPromo = telegramRepository.getAll("BenchPromos");
         } catch (IOException ex) {
             logger.severe("Error while getting Telegram Promos: " + ex.getMessage());
             throw new JobExecutionException(ex, true);
