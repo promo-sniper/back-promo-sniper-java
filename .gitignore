@@ -77,3 +77,10 @@ gradle-app.setting
 *.hprof
 
 # End of https://www.toptal.com/developers/gitignore/api/maven,java,gradle,ssh
+
+### Env Files
+env-files/
+
+### Intellij
+
+.idea

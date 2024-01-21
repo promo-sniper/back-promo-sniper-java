@@ -33,15 +33,38 @@
     </dependencyManagement>
 
     <dependencies>
-        <dependency>
+        <dependency> <!-- dropwizard base -->
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-core</artifactId>
         </dependency>
-        <dependency>
+        <dependency> <!-- dropwizard swagger plugin @ https://github.com/smoketurner/dropwizard-swagger -->
+            <groupId>com.smoketurner</groupId>
+            <artifactId>dropwizard-swagger</artifactId>
+            <version>4.0.5-1</version>
+        </dependency>
+        <dependency> <!-- dropwizard jobs plugin , uses quartz @ https://github.com/dropwizard-jobs/dropwizard-jobs -->
+            <groupId>io.github.dropwizard-jobs</groupId>
+            <artifactId>dropwizard-jobs-core</artifactId>
+            <version>6.0.1</version>
+        </dependency>
+        <dependency> <!-- DBI library @ https://jdbi.org/ -->
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-jdbi3</artifactId>
+        </dependency>
+        <dependency> <!-- JDBI postgresql plugin @ https://jdbi.org/ -->
+            <groupId>org.jdbi</groupId>
+            <artifactId>jdbi3-postgres</artifactId>
+        </dependency>
+        <dependency> <!-- postgresql JDBC driver @ https://jdbc.postgresql.org/ -->
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.1</version>
+        </dependency>
+        <dependency> <!-- Jacksson JSON library  -->
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
         </dependency>
-        <dependency>
+        <dependency> <!-- Validation API library @ https://beanvalidation.org/ -->
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
         </dependency>
@@ -49,16 +72,11 @@
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
-        <dependency>
+        <dependency> <!-- Lombok library @ https://projectlombok.org/ -->
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>RELEASE</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency> <!-- dropwizard swagger plugin @ https://github.com/smoketurner/dropwizard-swagger -->
-            <groupId>com.smoketurner</groupId>
-            <artifactId>dropwizard-swagger</artifactId>
-            <version>4.0.5-1</version>
         </dependency>
         <dependency> <!-- jsoup HTML parser library @ https://jsoup.org/ -->
             <groupId>org.jsoup</groupId>

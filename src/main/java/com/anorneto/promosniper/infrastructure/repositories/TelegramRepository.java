@@ -1,12 +1,15 @@
 package com.anorneto.promosniper.infrastructure.repositories;
 
 import com.anorneto.promosniper.domain.dto.TelegramPromoDTO;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -16,15 +19,19 @@ import static java.lang.String.format;
 
 public class TelegramRepository {
 
-    private static void log(String msg, String... vals) {
-        System.out.println(format(msg, vals));
-    }
-
     // TODO: Refactor this to receive a list of channels
-    public List<TelegramPromoDTO> getAll(String channelName) throws IOException {
+    public List<TelegramPromoDTO> getAll(@NotNull String channelName, @Null Integer afterId) throws IOException {
         ArrayList<TelegramPromoDTO> telegramPromoList = new ArrayList<>();
         String channelUrl = format("https://t.me/s/%s", channelName);
-        Document doc = Jsoup.connect(channelUrl).get();
+        if (afterId != null) {
+            channelUrl = format("%s?after=%d", channelUrl, afterId);
+        }
+        // TODO -> improve timeout config here, treat its exception
+        // TODO -> improve performace of scrapping? get multiple docs at once? and covert latter?
+        // Return Array instead of list because we know size.
+        Document doc = Jsoup.connect(channelUrl)
+                .timeout((int) Duration.ofSeconds(30).toMillis())
+                .get();
 
         String sourceHeadLink = doc.head().select("link[rel=canonical]").attr("href");
         Matcher sourceNameMatcher = Pattern.compile("/s/([a-zA-Z]+)\\?before=").matcher(sourceHeadLink);
@@ -52,7 +59,8 @@ public class TelegramRepository {
                     .getFirst()
                     .attr("datetime");
 
-            telegramPromoList.add(new TelegramPromoDTO(numVisulizations, text, photoURL, topicDateTime, sourceId));
+            telegramPromoList.add(
+                    new TelegramPromoDTO(numVisulizations, text, photoURL, topicDateTime, sourceId, channelName));
         }
         return telegramPromoList;
     }

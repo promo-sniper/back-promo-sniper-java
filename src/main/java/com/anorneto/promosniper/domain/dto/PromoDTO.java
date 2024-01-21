@@ -3,13 +3,13 @@ package com.anorneto.promosniper.domain.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.net.URL;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -21,23 +21,34 @@ public class PromoDTO {
 
     @NotBlank
     @JsonProperty
-    private String source;
+    private String sourceType;
 
+    @NotBlank
+    @JsonProperty
+    private String sourceName;
+
+    @JsonProperty
+    private int sourceIdentifier;
+
+    @NotBlank
     @JsonProperty
     private String description;
 
     @org.hibernate.validator.constraints.URL
-    @NotBlank
+    @Null
     @JsonProperty
-    private URL url;
+    private String productUrl;
 
     @JsonProperty
     private String productName;
 
     @JsonProperty
-    private float price;
+    private double productPrice;
+
+    @JsonProperty
+    private String productPhoto;
 
     @NotNull
     @JsonProperty
-    private LocalDateTime createdDate;
+    private ZonedDateTime createdDate;
 }

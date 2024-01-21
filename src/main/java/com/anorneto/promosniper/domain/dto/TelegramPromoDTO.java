@@ -22,11 +22,21 @@ public class TelegramPromoDTO {
     @NotBlank
     private final ZonedDateTime dateTime;
 
-    private int telegramId;
+    private final int telegramId;
 
-    public TelegramPromoDTO(String numVisualizations, String text, String photoUrl, String dateTime, int telegramId) {
+    @NotBlank
+    private final String channelName;
+
+    public TelegramPromoDTO(
+            String numVisualizations,
+            String text,
+            String photoUrl,
+            String dateTime,
+            int telegramId,
+            String channelName) {
         this.text = text;
         this.telegramId = telegramId;
+        this.channelName = channelName;
 
         this.numVisualizations = NumberParser.parseNumber(numVisualizations);
 
@@ -35,5 +45,20 @@ public class TelegramPromoDTO {
         this.photoUrl = photoUrlRegexMatcher.find() ? photoUrlRegexMatcher.group(1) : photoUrl;
 
         this.dateTime = ZonedDateTime.parse(dateTime);
+    }
+
+    public PromoDTO toPromoDTO() {
+
+        return PromoDTO.builder()
+                .sourceType("Telegram")
+                .sourceName(channelName)
+                .sourceIdentifier(telegramId)
+                .description(this.text)
+                .productUrl(null)
+                .productName("Unknown") // Update this as per your requirement
+                .productPrice(0.0) // Update this as per your requirement
+                .productPhoto(this.photoUrl)
+                .createdDate(this.dateTime)
+                .build();
     }
 }
