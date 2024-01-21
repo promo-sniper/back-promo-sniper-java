@@ -93,7 +93,9 @@ public class PromoSniperApplication extends Application<PromoSniperConfiguration
         ScrapTelegramJob scrapTelegramJob = new ScrapTelegramJob(jdbi);
         JobsBundle jobsBundle = new JobsBundle(List.of(scrapTelegramJob));
         try {
-            jobsBundle.run(configuration, environment);
+            if (configuration.shouldRunJobs) {
+                jobsBundle.run(configuration, environment);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

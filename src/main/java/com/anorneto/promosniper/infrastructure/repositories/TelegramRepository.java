@@ -1,6 +1,8 @@
 package com.anorneto.promosniper.infrastructure.repositories;
 
 import com.anorneto.promosniper.domain.dto.TelegramPromoDTO;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,14 +19,13 @@ import static java.lang.String.format;
 
 public class TelegramRepository {
 
-    private static void log(String msg, String... vals) {
-        System.out.println(format(msg, vals));
-    }
-
     // TODO: Refactor this to receive a list of channels
-    public List<TelegramPromoDTO> getAll(String channelName) throws IOException {
+    public List<TelegramPromoDTO> getAll(@NotNull String channelName, @Null Integer afterId) throws IOException {
         ArrayList<TelegramPromoDTO> telegramPromoList = new ArrayList<>();
         String channelUrl = format("https://t.me/s/%s", channelName);
+        if (afterId != null) {
+            channelUrl = format("%s?after=%d", channelUrl, afterId);
+        }
         // TODO -> improve timeout config here, treat its exception
         // TODO -> improve performace of scrapping? get multiple docs at once? and covert latter?
         // Return Array instead of list because we know size.

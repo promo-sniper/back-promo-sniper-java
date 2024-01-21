@@ -9,6 +9,8 @@ import jakarta.validation.constraints.NotNull;
 
 // Gets properties from the YAML config file
 public class PromoSniperConfiguration extends JobConfiguration {
+    @JsonProperty("shouldRunJobs")
+    public boolean shouldRunJobs;
 
     @JsonProperty("swagger")
     public SwaggerBundleConfiguration swaggerBundleConfiguration;

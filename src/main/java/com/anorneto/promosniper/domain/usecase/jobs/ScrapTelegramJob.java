@@ -16,11 +16,12 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Log
 @DelayStart("30s")
-@Every(value = "2m", jobName = "scrap-telegram")
+@Every(value = "30m", jobName = "scrap-telegram")
 public class ScrapTelegramJob extends Job {
 
     private final Jdbi jdbi;
@@ -38,12 +39,16 @@ public class ScrapTelegramJob extends Job {
         TelegramRepository telegramRepository = new TelegramRepository();
         PromoRepository promoRepository = new PromoRepository(jdbi);
 
+        List<TelegramPromoDTO> telegramPromoListRapadura = null, telegramPromoListBenchPromo = null;
         logger.info("Starting ScrapTelegramJob");
 
-        List<TelegramPromoDTO> telegramPromoListRapadura = null, telegramPromoListBenchPromo = null;
+        HashMap<String, Integer> maxIdentifierBySourceName = promoRepository.getMaxIdentifierBySourceName("Telegram");
+        Integer afterIdRapadura = maxIdentifierBySourceName.getOrDefault("rapaduraofertas", null);
+        Integer afterIdBenchPromo = maxIdentifierBySourceName.getOrDefault("BenchPromos", null);
+
         try {
-            telegramPromoListRapadura = telegramRepository.getAll("rapaduraofertas");
-            telegramPromoListBenchPromo = telegramRepository.getAll("BenchPromos");
+            telegramPromoListRapadura = telegramRepository.getAll("rapaduraofertas", afterIdRapadura);
+            telegramPromoListBenchPromo = telegramRepository.getAll("BenchPromos", afterIdBenchPromo);
         } catch (IOException ex) {
             logger.severe("Error while getting Telegram Promos: " + ex.getMessage());
             throw new JobExecutionException(ex, true);
@@ -60,6 +65,9 @@ public class ScrapTelegramJob extends Job {
 
         LocalDateTime endTime = LocalDateTime.now();
         long elaspedTimeMillis = ChronoUnit.MILLIS.between(startTime, endTime);
-        logger.info("Finish ScrapTelegramJob - Elasped " + elaspedTimeMillis + " ms");
+        logger.info("Finish ScrapTelegramJob - Inserted: " + promoDTOList.size()
+                + " | Elasped: "
+                + elaspedTimeMillis
+                + " ms");
     }
 }

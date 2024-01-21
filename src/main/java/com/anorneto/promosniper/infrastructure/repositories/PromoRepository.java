@@ -5,8 +5,10 @@ import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.PreparedBatch;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 
 public class PromoRepository {
 
@@ -39,6 +41,25 @@ public class PromoRepository {
             }
 
             batch.execute();
+        }
+    }
+
+    public HashMap<String, Integer> getMaxIdentifierBySourceName(String sourceType) {
+        try (Handle handle = jdbi.open()) {
+            return handle.createQuery("SELECT source_name, MAX(source_identifier) AS source_identifier\n"
+                            + "FROM promo WHERE source_type = :sourceType GROUP BY source_name")
+                    .bind("sourceType", sourceType)
+                    .mapToMap()
+                    .collect(Collector.of(
+                            HashMap::new,
+                            (accum, item) -> {
+                                accum.put((String) item.get("source_name"), (Integer) item.get("source_identifier"));
+                            },
+                            (l, r) -> {
+                                l.putAll(r); // While jdbi does not process rows in parallel,
+                                return l; // the Collector contract encourages writing combiners
+                            },
+                            Collector.Characteristics.IDENTITY_FINISH));
         }
     }
 

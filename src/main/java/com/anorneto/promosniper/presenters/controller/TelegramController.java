@@ -18,6 +18,7 @@ import org.jdbi.v3.core.Jdbi;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -78,10 +79,11 @@ public class TelegramController {
     public CommonApiResponse<List<TelegramPromoDTO>> getTelegramPromos(
             @NotBlank @QueryParam("channelName") final String channelName) throws IOException {
         CommonApiResponse<List<TelegramPromoDTO>> response = new CommonApiResponse<>();
-
-        List<TelegramPromoDTO> telegramPromoList = telegramRepository.getAll(channelName);
-
         PromoRepository promoRepository = new PromoRepository(this.jdbi);
+
+        HashMap<String, Integer> maxIdentifierBySourceName = promoRepository.getMaxIdentifierBySourceName("Telegram");
+        Integer afterId = maxIdentifierBySourceName.getOrDefault(channelName, null);
+        List<TelegramPromoDTO> telegramPromoList = telegramRepository.getAll(channelName, afterId);
 
         List<PromoDTO> promoDTOList =
                 telegramPromoList.stream().map(TelegramPromoDTO::toPromoDTO).toList();
