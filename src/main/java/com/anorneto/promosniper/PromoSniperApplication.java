@@ -72,12 +72,15 @@ public class PromoSniperApplication extends Application<PromoSniperConfiguration
         // environment.jersey().register(new UserResource(jdbi));
         // Servlets Cors Filter
         FilterRegistration.Dynamic corsFilter = environment.servlets().addFilter("CORS", CrossOriginFilter.class);
-        corsFilter.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,PUT,PATCH,POST,DELETE,OPTIONS");
+        corsFilter.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,PUT,PATCH,POST,DELETE,OPTIONS,HEAD");
         corsFilter.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");
         corsFilter.setInitParameter(
                 CrossOriginFilter.ALLOWED_HEADERS_PARAM,
-                "Content-Type,Authorization,X-Requested-With,Content-Length,Accept,Origin");
+                "Authorization,X-Requested-With,Content-Type,Content-Length,Accept,Origin,Cache-Control,If-Modified-Since,Pragma");
         corsFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
+        // DO NOT pass a preflight request to down-stream auth filters
+        // unauthenticated preflight requests should be permitted by spec
+        corsFilter.setInitParameter(CrossOriginFilter.CHAIN_PREFLIGHT_PARAM, Boolean.FALSE.toString());
 
         // Status Filter
         environment.jersey().register(StatusCodeFeature.class);
