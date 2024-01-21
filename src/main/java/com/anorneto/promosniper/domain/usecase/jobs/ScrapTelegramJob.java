@@ -7,7 +7,6 @@ import com.anorneto.promosniper.infrastructure.repositories.TelegramRepository;
 import io.dropwizard.jobs.Job;
 import io.dropwizard.jobs.annotations.DelayStart;
 import io.dropwizard.jobs.annotations.Every;
-import lombok.extern.java.Log;
 import org.jdbi.v3.core.Jdbi;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -18,11 +17,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
-@Log
 @DelayStart("30s")
 @Every(value = "30m", jobName = "scrap-telegram")
 public class ScrapTelegramJob extends Job {
+
+    private static final Logger logger = Logger.getLogger(ScrapTelegramJob.class.getName());
 
     private final Jdbi jdbi;
 
