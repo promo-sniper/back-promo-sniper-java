@@ -5,7 +5,6 @@ import com.anorneto.promosniper.domain.dto.TelegramPromoDTO;
 import com.anorneto.promosniper.infrastructure.repositories.PromoRepository;
 import com.anorneto.promosniper.infrastructure.repositories.TelegramRepository;
 import com.anorneto.promosniper.presenters.common.CommonApiResponse;
-import com.anorneto.promosniper.presenters.common.StatusCode;
 import com.codahale.metrics.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -54,7 +53,6 @@ public class TelegramController {
 
     @POST
     @Path("channel")
-    @StatusCode(201)
     @Timed
     @Operation(
             summary = "Add Telegram Channel",
@@ -65,7 +63,7 @@ public class TelegramController {
             @NotBlank @QueryParam("channelName") final String channelName) {
         CommonApiResponse<List<String>> response = new CommonApiResponse<>();
         telegramChannels.add(channelName);
-        return response.ok(telegramChannels);
+        return response.created(telegramChannels);
     }
 
     @GET

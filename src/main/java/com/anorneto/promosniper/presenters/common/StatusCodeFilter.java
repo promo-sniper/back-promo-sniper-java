@@ -6,7 +6,6 @@ import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.ext.Provider;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 
 @Provider
 public class StatusCodeFilter implements ContainerResponseFilter {
@@ -15,13 +14,8 @@ public class StatusCodeFilter implements ContainerResponseFilter {
     public void filter(
             ContainerRequestContext containerRequestContext, ContainerResponseContext containerResponseContext)
             throws IOException {
-        if (containerResponseContext.getStatus() == 200) {
-            for (Annotation annotation : containerResponseContext.getEntityAnnotations()) {
-                if (annotation instanceof StatusCode) {
-                    containerResponseContext.setStatus(((StatusCode) annotation).value());
-                    break;
-                }
-            }
-        }
+        CommonApiResponse<?> commonApiResponse = (CommonApiResponse<?>) containerResponseContext.getEntity();
+        int statusCode = commonApiResponse.getStatusCode();
+        containerResponseContext.setStatus(statusCode);
     }
 }

@@ -1,5 +1,7 @@
 package com.anorneto.promosniper.presenters.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,8 +14,14 @@ import java.time.ZonedDateTime;
 @Getter
 @AllArgsConstructor
 public class CommonApiResponse<T> {
+    @JsonProperty("requestMetrics")
     private RequestMetrics requestMetrics;
+
+    @JsonProperty("data")
     private T data;
+
+    @JsonIgnore
+    private int statusCode;
 
     public CommonApiResponse() {
         this.requestMetrics = new RequestMetrics();
@@ -25,21 +33,25 @@ public class CommonApiResponse<T> {
     }
 
     public CommonApiResponse<T> ok(T data) {
+        this.statusCode = 200;
         this.setData(data);
         return this;
     }
 
     public CommonApiResponse<T> created(T data) {
+        this.statusCode = 201;
         this.setData(data);
         return this;
     }
 
     public CommonApiResponse<T> noContent() {
+        this.statusCode = 204;
         this.setData(null);
         return this;
     }
 
     public CommonApiResponse<T> accepted() {
+        this.statusCode = 202;
         this.setData(null);
         return this;
     }
