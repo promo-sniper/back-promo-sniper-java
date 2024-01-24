@@ -40,6 +40,7 @@ public class ScrapTelegramJob extends Job {
         TelegramRepository telegramRepository = new TelegramRepository();
         PromoRepository promoRepository = new PromoRepository(jdbi);
 
+        // TODO: READ THIS LIST FROM DB
         List<String> listChannelToScrap = List.of(
                 "rapaduraofertas",
                 "BenchPromos",
@@ -48,7 +49,7 @@ public class ScrapTelegramJob extends Job {
                 "mmofertas",
                 "ofertasadrenaline",
                 "ofertaskabum",
-                "tecmundo_ofertas",
+                // "tecmundo_ofertas",
                 "teniscertocupons",
                 "TukOferta");
 

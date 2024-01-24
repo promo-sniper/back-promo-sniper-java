@@ -51,6 +51,7 @@ public class TelegramRepository {
                     .select("div.tgme_widget_message_footer > div.tgme_widget_message_info")
                     .getFirst();
 
+            // TODO -> include this in database
             String numVisulizations = "0";
             try {
                 numVisulizations = topicFooter
