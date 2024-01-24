@@ -50,10 +50,16 @@ public class TelegramRepository {
             Element topicFooter = telegramHtmlElement
                     .select("div.tgme_widget_message_footer > div.tgme_widget_message_info")
                     .getFirst();
-            String numVisulizations = topicFooter
-                    .getElementsByClass("tgme_widget_message_views")
-                    .getFirst()
-                    .text();
+
+            String numVisulizations = "0";
+            try {
+                numVisulizations = topicFooter
+                        .getElementsByClass("tgme_widget_message_views")
+                        .getFirst()
+                        .text();
+            } catch (Exception e) {
+                // TODO -> log this exception
+            }
             String topicDateTime = topicFooter
                     .select("span.tgme_widget_message_meta > a.tgme_widget_message_date > time")
                     .getFirst()

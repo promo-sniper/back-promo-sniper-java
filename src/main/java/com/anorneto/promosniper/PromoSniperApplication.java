@@ -1,7 +1,8 @@
 package com.anorneto.promosniper;
 
 import com.anorneto.promosniper.domain.usecase.jobs.ScrapTelegramJob;
-import com.anorneto.promosniper.presenters.common.StatusCodeFeature;
+import com.anorneto.promosniper.presenters.common.CORSFilter;
+import com.anorneto.promosniper.presenters.common.StatusCodeFilter;
 import com.anorneto.promosniper.presenters.controller.TelegramController;
 import com.anorneto.promosniper.presenters.controller.UserController;
 import com.anorneto.promosniper.presenters.healthcheck.AppHealthCheck;
@@ -19,13 +20,10 @@ import io.dropwizard.jdbi3.bundles.JdbiExceptionsBundle;
 import io.dropwizard.jobs.JobsBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundle;
 import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
-import jakarta.servlet.DispatcherType;
-import jakarta.servlet.FilterRegistration;
-import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.jdbi.v3.core.Jdbi;
 
-import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 public class PromoSniperApplication extends Application<PromoSniperConfiguration> {
 
@@ -69,21 +67,17 @@ public class PromoSniperApplication extends Application<PromoSniperConfiguration
         final Jdbi jdbi = factory.build(environment, configuration.getDataSourceFactory(), "postgresql");
 
         // TODO -> Create Bundle for This
-        // environment.jersey().register(new UserResource(jdbi));
-        // Servlets Cors Filter
-        FilterRegistration.Dynamic corsFilter = environment.servlets().addFilter("CORS", CrossOriginFilter.class);
-        corsFilter.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,PUT,PATCH,POST,DELETE,OPTIONS,HEAD");
-        corsFilter.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");
-        corsFilter.setInitParameter(
-                CrossOriginFilter.ALLOWED_HEADERS_PARAM,
-                "Authorization,X-Requested-With,Content-Type,Content-Length,Accept,Origin,Cache-Control,If-Modified-Since,Pragma");
-        corsFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
-        // DO NOT pass a preflight request to down-stream auth filters
-        // unauthenticated preflight requests should be permitted by spec
-        corsFilter.setInitParameter(CrossOriginFilter.CHAIN_PREFLIGHT_PARAM, Boolean.FALSE.toString());
+        // Jersey Cors Filter
+        CORSFilter corsFilter = new CORSFilter();
+        corsFilter.setAllowCredentials(true);
+        corsFilter.setAllowedHeaders("Content-Type,Authorization,X-Requested-With,Content-Length,Accept,Origin");
+        corsFilter.setAllowedOrigins(Set.of("*"));
+        corsFilter.setAllowedMethods("GET,PUT,PATCH,POST,DELETE,OPTIONS");
+        corsFilter.setCorsMaxAge(1800);
+        environment.jersey().register(corsFilter);
 
         // Status Filter
-        environment.jersey().register(StatusCodeFeature.class);
+        environment.jersey().register(StatusCodeFilter.class);
 
         // Register new routes here
         environment.jersey().register(UserController.class);

@@ -40,24 +40,37 @@ public class ScrapTelegramJob extends Job {
         TelegramRepository telegramRepository = new TelegramRepository();
         PromoRepository promoRepository = new PromoRepository(jdbi);
 
-        List<TelegramPromoDTO> telegramPromoListRapadura = null, telegramPromoListBenchPromo = null;
+        List<String> listChannelToScrap = List.of(
+                "rapaduraofertas",
+                "BenchPromos",
+                "ctofertas",
+                "gtOFERTAS",
+                "mmofertas",
+                "ofertasadrenaline",
+                "ofertaskabum",
+                "tecmundo_ofertas",
+                "teniscertocupons",
+                "TukOferta");
+
         logger.info("Starting ScrapTelegramJob");
 
-        HashMap<String, Integer> maxIdentifierBySourceName = promoRepository.getMaxIdentifierBySourceName("Telegram");
-        Integer afterIdRapadura = maxIdentifierBySourceName.getOrDefault("rapaduraofertas", null);
-        Integer afterIdBenchPromo = maxIdentifierBySourceName.getOrDefault("BenchPromos", null);
-
-        try {
-            telegramPromoListRapadura = telegramRepository.getAll("rapaduraofertas", afterIdRapadura);
-            telegramPromoListBenchPromo = telegramRepository.getAll("BenchPromos", afterIdBenchPromo);
-        } catch (IOException ex) {
-            logger.severe("Error while getting Telegram Promos: " + ex.getMessage());
-            throw new JobExecutionException(ex, true);
-        }
-
         List<TelegramPromoDTO> combined = new ArrayList<>();
-        combined.addAll(telegramPromoListRapadura);
-        combined.addAll(telegramPromoListBenchPromo);
+
+        HashMap<String, Integer> maxIdentifierBySourceName = promoRepository.getMaxIdentifierBySourceName("Telegram");
+
+        for (String channel : listChannelToScrap) {
+            List<TelegramPromoDTO> telegramPromoDTOList;
+
+            Integer afterIdForChannel = maxIdentifierBySourceName.getOrDefault(channel, null);
+            try {
+                telegramPromoDTOList = telegramRepository.getAll(channel, afterIdForChannel);
+            } catch (IOException ex) {
+                logger.severe("Error while getting Telegram Promos: " + ex.getMessage());
+                throw new JobExecutionException(ex, true);
+            }
+
+            combined.addAll(telegramPromoDTOList);
+        }
 
         List<PromoDTO> promoDTOList =
                 combined.stream().map(TelegramPromoDTO::toPromoDTO).toList();
