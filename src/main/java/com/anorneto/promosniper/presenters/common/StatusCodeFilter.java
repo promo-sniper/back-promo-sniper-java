@@ -14,8 +14,9 @@ public class StatusCodeFilter implements ContainerResponseFilter {
     public void filter(
             ContainerRequestContext containerRequestContext, ContainerResponseContext containerResponseContext)
             throws IOException {
-        CommonApiResponse<?> commonApiResponse = (CommonApiResponse<?>) containerResponseContext.getEntity();
-        int statusCode = commonApiResponse.getStatusCode();
-        containerResponseContext.setStatus(statusCode);
+        if (containerResponseContext.getEntity() instanceof CommonApiResponse<?> commonApiResponse) {
+            int statusCode = commonApiResponse.getStatusCode();
+            containerResponseContext.setStatus(statusCode);
+        }
     }
 }
