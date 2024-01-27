@@ -71,7 +71,7 @@ public class PromoSniperApplication extends Application<PromoSniperConfiguration
         CORSFilter corsFilter = new CORSFilter();
         corsFilter.setAllowCredentials(true);
         corsFilter.setAllowedHeaders("Content-Type,Authorization,X-Requested-With,Content-Length,Accept,Origin");
-        corsFilter.setAllowedOrigins(Set.of("*"));
+        corsFilter.setAllowedOrigins("http://localhost:3000");
         corsFilter.setAllowedMethods("GET,PUT,PATCH,POST,DELETE,OPTIONS");
         corsFilter.setCorsMaxAge(1800);
         environment.jersey().register(corsFilter);
