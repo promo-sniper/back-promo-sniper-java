@@ -147,12 +147,11 @@ public class CORSFilter implements ContainerRequestFilter, ContainerResponseFilt
         builder.header(CorsHeaders.ACCESS_CONTROL_ALLOW_METHODS, requestMethods);
 
         String allowHeaders = requestContext.getHeaderString(CorsHeaders.ACCESS_CONTROL_REQUEST_HEADERS);
-        if (allowHeaders != null) {
-            if (getAllowedHeaders() != null) {
-                allowHeaders = getAllowedHeaders();
-            }
-            builder.header(CorsHeaders.ACCESS_CONTROL_ALLOW_HEADERS, allowHeaders);
+        if (getAllowedHeaders() != null) {
+            allowHeaders = getAllowedHeaders();
         }
+        builder.header(CorsHeaders.ACCESS_CONTROL_ALLOW_HEADERS, allowHeaders);
+
         if (getCorsMaxAge() > -1) {
             builder.header(CorsHeaders.ACCESS_CONTROL_MAX_AGE, getCorsMaxAge());
         }
