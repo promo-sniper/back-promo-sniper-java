@@ -68,6 +68,32 @@ public class PromoSniperApplication extends Application<PromoSniperConfiguration
 
         // TODO -> Create Bundle for This
         // Jersey Cors Filter
+        private static boolean isPreflightRequest(ContainerRequestContext request) {
+            return request.getHeaderString("Origin") != null
+                    && request.getMethod().equalsIgnoreCase("OPTIONS");
+        }
+
+        @Override
+        public void filter(ContainerRequestContext request) throws IOException {
+    
+            // If it's a preflight request, we abort the request with
+            // a 200 status, and the CORS headers are added in the
+            // response filter method below.
+            if (isPreflightRequest(request)) {
+                request.abortWith(Response.ok().build());
+                return;
+            }
+        }
+    
+  
+        if (isPreflightRequest(request)) {
+            response.getHeaders().add("Access-Control-Allow-Credentials", "true");
+            response.getHeaders().add("Access-Control-Allow-Methods",
+                "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+            response.getHeaders().add("Access-Control-Allow-Headers",
+                "X-Requested-With, Authorization, " +
+                "Accept-Version, Content-type, Content-MD5, CSRF-Token");
+        }
         CORSFilter corsFilter = new CORSFilter();
         corsFilter.setAllowCredentials(true);
         corsFilter.setAllowedHeaders("Content-Type,Authorization,X-Requested-With,Content-Length,Accept,Origin");
@@ -75,6 +101,8 @@ public class PromoSniperApplication extends Application<PromoSniperConfiguration
         corsFilter.setAllowedMethods("GET,PUT,PATCH,POST,DELETE,OPTIONS");
         corsFilter.setCorsMaxAge(1800);
         environment.jersey().register(corsFilter);
+ 
+
 
         // Status Filter
         environment.jersey().register(StatusCodeFilter.class);
