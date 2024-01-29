@@ -71,6 +71,15 @@ public class PromoRepository {
         }
     }
 
+    public List<PromoDTO> getForSouceName(String sourceName) {
+        try (Handle handle = jdbi.open()) {
+            return handle.createQuery("SELECT * FROM promo where source_name = :sourceName")
+                    .bind("sourceName", sourceName)
+                    .mapToBean(PromoDTO.class)
+                    .list();
+        }
+    }
+
     public PromoDTO getById(int id) {
         try (Handle handle = jdbi.open()) {
             Optional<PromoDTO> result = handle.createQuery("SELECT * FROM promo WHERE id = :id")
