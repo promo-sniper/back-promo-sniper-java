@@ -46,6 +46,7 @@ public class PromoController {
                     @QueryParam("sourceName")
                     @NotBlank
                     String sourceName) {
+        // TODO -> add dateFrom filter here, need to create type because jax-rs doesnt offers one
         CommonApiResponse<List<PromoDTO>> response = new CommonApiResponse<>();
         List<PromoDTO> promoDTOList = promoRepository.getForSouceName(sourceName);
         return response.ok(promoDTOList);
