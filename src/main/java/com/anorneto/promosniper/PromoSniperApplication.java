@@ -3,6 +3,7 @@ package com.anorneto.promosniper;
 import com.anorneto.promosniper.domain.usecase.jobs.ScrapTelegramJob;
 import com.anorneto.promosniper.presenters.common.CORSFilter;
 import com.anorneto.promosniper.presenters.common.StatusCodeFilter;
+import com.anorneto.promosniper.presenters.controller.PromoController;
 import com.anorneto.promosniper.presenters.controller.TelegramController;
 import com.anorneto.promosniper.presenters.controller.UserController;
 import com.anorneto.promosniper.presenters.healthcheck.AppHealthCheck;
@@ -83,6 +84,7 @@ public class PromoSniperApplication extends Application<PromoSniperConfiguration
         // Register new routes here
         environment.jersey().register(UserController.class);
         environment.jersey().register(new TelegramController(jdbi));
+        environment.jersey().register(new PromoController(jdbi));
         //  HealthChecks
         AppHealthCheck appHealthCheck = new AppHealthCheck();
         environment.healthChecks().register("appHealthCheck", appHealthCheck);
