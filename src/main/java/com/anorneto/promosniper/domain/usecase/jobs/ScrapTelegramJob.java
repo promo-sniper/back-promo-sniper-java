@@ -7,7 +7,7 @@ import com.anorneto.promosniper.infrastructure.repositories.TelegramRepository;
 import io.dropwizard.jobs.Job;
 import io.dropwizard.jobs.annotations.DelayStart;
 import io.dropwizard.jobs.annotations.Every;
-import org.jdbi.v3.core.Jdbi;
+import jakarta.inject.Inject;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -19,16 +19,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * @author Anor Neto
+ */
 @DelayStart("30s")
 @Every(value = "30m", jobName = "scrap-telegram")
 public class ScrapTelegramJob extends Job {
 
     private static final Logger logger = Logger.getLogger(ScrapTelegramJob.class.getName());
 
-    private final Jdbi jdbi;
+    private final PromoRepository promoRepository;
+    private final TelegramRepository telegramRepository;
 
-    public ScrapTelegramJob(Jdbi jdbi) {
-        this.jdbi = jdbi;
+    @Inject
+    public ScrapTelegramJob(final PromoRepository promoRepository, final TelegramRepository telegramRepository) {
+        this.promoRepository = promoRepository;
+        this.telegramRepository = telegramRepository;
     }
 
     @Override
@@ -36,9 +42,6 @@ public class ScrapTelegramJob extends Job {
 
         LocalDateTime startTime = LocalDateTime.now();
         // TODO -> put this logic inside UseCase
-        // Set Guice Injector + JDBI Plugin for it
-        TelegramRepository telegramRepository = new TelegramRepository();
-        PromoRepository promoRepository = new PromoRepository(jdbi);
 
         // TODO: READ THIS LIST FROM DB
         List<String> listChannelToScrap = List.of(

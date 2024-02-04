@@ -1,4 +1,4 @@
-package com.anorneto.promosniper.domain.dao;
+package com.anorneto.promosniper.infrastructure.repositories;
 
 import com.anorneto.promosniper.domain.dto.PromoDTO;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;

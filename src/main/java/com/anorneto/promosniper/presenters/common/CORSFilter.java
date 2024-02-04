@@ -4,6 +4,7 @@ import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.container.*;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
+import ru.vyarus.dropwizard.guice.module.installer.feature.jersey.JerseyManaged;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import java.util.Set;
 
 @Provider
 @PreMatching
+@JerseyManaged
 public class CORSFilter implements ContainerRequestFilter, ContainerResponseFilter {
     protected boolean allowCredentials = true;
     protected String allowedMethods;
@@ -124,8 +126,9 @@ public class CORSFilter implements ContainerRequestFilter, ContainerResponseFilt
         }
         responseContext.getHeaders().putSingle(CorsHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
         responseContext.getHeaders().putSingle(CorsHeaders.VARY, CorsHeaders.ORIGIN);
-        if (isAllowCredentials())
+        if (isAllowCredentials()) {
             responseContext.getHeaders().putSingle(CorsHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+        }
 
         if (getExposedHeaders() != null) {
             responseContext.getHeaders().putSingle(CorsHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, getExposedHeaders());
@@ -138,7 +141,9 @@ public class CORSFilter implements ContainerRequestFilter, ContainerResponseFilt
         Response.ResponseBuilder builder = Response.ok();
         builder.header(CorsHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
         builder.header(CorsHeaders.VARY, CorsHeaders.ORIGIN);
-        if (isAllowCredentials()) builder.header(CorsHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+        if (isAllowCredentials()) {
+            builder.header(CorsHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+        }
 
         String requestMethods = requestContext.getHeaderString(CorsHeaders.ACCESS_CONTROL_REQUEST_METHOD);
         if (getAllowedMethods() != null) {

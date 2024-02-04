@@ -8,13 +8,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.inject.Inject;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
-import org.jdbi.v3.core.Jdbi;
 
 import java.util.List;
 
@@ -26,12 +26,10 @@ import java.util.List;
 @Tag(name = "Promo", description = "Promo related routes")
 public class PromoController {
     final PromoRepository promoRepository;
-    final Jdbi jdbi;
 
-    // TODO: Do dependency injection here later
-    public PromoController(Jdbi jdbi) {
-        this.jdbi = jdbi;
-        this.promoRepository = new PromoRepository(jdbi);
+    @Inject
+    public PromoController(final PromoRepository promoRepository) {
+        this.promoRepository = promoRepository;
     }
 
     @GET
@@ -41,7 +39,7 @@ public class PromoController {
             description = "Get Promos for Source",
             operationId = "getPromosForSource",
             responses = {@ApiResponse(responseCode = "200", description = "OK", useReturnTypeSchema = true)})
-    public CommonApiResponse<List<PromoDTO>> getTelegramChannels(
+    public CommonApiResponse<List<PromoDTO>> getPromosForSource(
             @Parameter(description = "Source to search promotions for", required = true)
                     @QueryParam("sourceName")
                     @NotBlank

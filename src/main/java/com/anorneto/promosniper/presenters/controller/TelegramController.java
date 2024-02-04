@@ -9,11 +9,10 @@ import com.codahale.metrics.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.inject.Inject;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import org.jdbi.v3.core.Jdbi;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,13 +29,14 @@ import java.util.List;
 public class TelegramController {
     private static final List<String> telegramChannels =
             new ArrayList<>(Arrays.asList("BenchPromos", "rapaduraofertas"));
-    final TelegramRepository telegramRepository;
-    final Jdbi jdbi;
+    final PromoRepository promoRepository;
 
-    // TODO: Do dependency injection here later
-    public TelegramController(Jdbi jdbi) {
-        this.telegramRepository = new TelegramRepository();
-        this.jdbi = jdbi;
+    final TelegramRepository telegramRepository;
+
+    @Inject
+    public TelegramController(final PromoRepository promoRepository, final TelegramRepository telegramRepository) {
+        this.promoRepository = promoRepository;
+        this.telegramRepository = telegramRepository;
     }
 
     @GET
@@ -78,7 +78,6 @@ public class TelegramController {
     public CommonApiResponse<List<TelegramPromoDTO>> getTelegramPromos(
             @NotBlank @QueryParam("channelName") final String channelName) throws IOException {
         CommonApiResponse<List<TelegramPromoDTO>> response = new CommonApiResponse<>();
-        PromoRepository promoRepository = new PromoRepository(this.jdbi);
 
         HashMap<String, Integer> maxIdentifierBySourceName = promoRepository.getMaxIdentifierBySourceName("Telegram");
         Integer afterId = maxIdentifierBySourceName.getOrDefault(channelName, null);
