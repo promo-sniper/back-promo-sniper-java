@@ -29,6 +29,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>ru.vyarus.guicey</groupId>
+                <artifactId>guicey-bom</artifactId>
+                <version>7.1.1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -42,14 +49,25 @@
             <artifactId>dropwizard-swagger</artifactId>
             <version>4.0.5-1</version>
         </dependency>
-        <dependency> <!-- dropwizard jobs plugin , uses quartz @ https://github.com/dropwizard-jobs/dropwizard-jobs -->
+        <!-- dropwizard jobs plugin , uses quartz @ https://github.com/dropwizard-jobs/dropwizard-jobs -->
+        <dependency>
             <groupId>io.github.dropwizard-jobs</groupId>
             <artifactId>dropwizard-jobs-core</artifactId>
             <version>6.0.1</version>
         </dependency>
-        <dependency> <!-- DBI library @ https://jdbi.org/ -->
+        <dependency>
+            <groupId>io.github.dropwizard-jobs</groupId>
+            <artifactId>dropwizard-jobs-guice</artifactId>
+            <version>6.0.1</version>
+        </dependency>
+        <!-- DBI library @ https://jdbi.org/ -->
+        <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-jdbi3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jdbi</groupId>
+            <artifactId>jdbi3-jodatime2</artifactId>
         </dependency>
         <dependency> <!-- JDBI postgresql plugin @ https://jdbi.org/ -->
             <groupId>org.jdbi</groupId>
@@ -82,6 +100,14 @@
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>1.17.1</version>
+        </dependency>
+        <dependency> <!-- Guicey DI @ https://github.com/xvik/dropwizard-guicey -->
+            <groupId>ru.vyarus</groupId>
+            <artifactId>dropwizard-guicey</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.vyarus.guicey</groupId>
+            <artifactId>guicey-jdbi3</artifactId>
         </dependency>
     </dependencies>
 

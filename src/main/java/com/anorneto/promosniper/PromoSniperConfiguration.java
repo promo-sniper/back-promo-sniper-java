@@ -7,6 +7,9 @@ import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * @author Anor Neto
+ */
 // Gets properties from the YAML config file
 public class PromoSniperConfiguration extends JobConfiguration {
     @JsonProperty("shouldRunJobs")

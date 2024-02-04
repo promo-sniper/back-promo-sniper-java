@@ -1,6 +1,7 @@
 package com.anorneto.promosniper.infrastructure.repositories;
 
 import com.anorneto.promosniper.domain.dto.TelegramPromoDTO;
+import jakarta.inject.Singleton;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import org.jsoup.Jsoup;
@@ -17,6 +18,10 @@ import java.util.regex.Pattern;
 
 import static java.lang.String.format;
 
+/**
+ * @author Anor Neto
+ */
+@Singleton // TODO -> make interface for this
 public class TelegramRepository {
 
     // TODO: Refactor this to receive a list of channels
