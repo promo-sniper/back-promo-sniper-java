@@ -33,7 +33,7 @@ database:
   minSize: 2 # 8
   # the maximum number of connections to keep open
   maxSize: 12 #32
-  # whether or not idle connections should be validated
+  # whether idle connections should be validated
   checkConnectionWhileIdle: false
   # the amount of time to sleep between runs of the idle connection validation, abandoned cleaner and idle pool resizing
   evictionInterval: 10s

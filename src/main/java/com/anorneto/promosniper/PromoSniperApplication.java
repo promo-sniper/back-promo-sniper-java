@@ -88,8 +88,7 @@ public class PromoSniperApplication extends Application<PromoSniperConfiguration
         // environment.jersey().register(StatusCodeFilter.class);
 
         //  HealthChecks
-        // AppHealthCheck appHealthCheck = new AppHealthCheck();
-        // environment.healthChecks().register("appHealthCheck", appHealthCheck);
-
+        /// AppHealthCheck appHealthCheck = new AppHealthCheck();
+        /// environment.healthChecks().register("appHealthCheck", appHealthCheck);
     }
 }
